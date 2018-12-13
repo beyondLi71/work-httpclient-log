@@ -16,3 +16,5 @@
 
      使用方式
         拷贝完以上文件,只要将HttpLogService接口注入,按照传参规则调用其中方法即可。
+     其他
+        HttpLogServiceImpl文件中86行以及93行使用的是RuntimeException异常抛出,如项目中进行了异常封装可修改为对应抛出方式
