@@ -3,6 +3,7 @@ package com.beyondli.service.http;
 import com.beyondli.common.utils.NewRequestUtils;
 import com.beyondli.entity.po.http.HttpResult;
 import com.beyondli.repository.httplog.HttpLogCUDMapper;
+import com.beyondli.service.log.HttpLogRecordService;
 import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
@@ -17,15 +18,17 @@ import java.util.Map;
 @Service
 public class HttpLogServiceImpl implements HttpLogService {
 
+/*    @Resource
+    HttpLogCUDMapper httpLogCUDMapper;*/
     @Resource
-    HttpLogCUDMapper httpLogCUDMapper;
+    HttpLogRecordService httpLogRecordService;
 
     @Override
     public <T> T executeGet(String url, Class<T> clazz) {
             //网络请求
             HttpResult httpResult = NewRequestUtils.doGet(url);
             //添加http日志记录
-            httpLogCUDMapper.addHttpLogOut(httpResult.getHttpLogOutPO());
+            httpLogRecordService.addHttpLogOut(httpResult.getHttpLogOutPO());
             //判断状态码以及数据类型转换
             return verifyStatusCodeAndJsonFormat(httpResult, clazz);
     }
@@ -35,7 +38,7 @@ public class HttpLogServiceImpl implements HttpLogService {
             //网络请求
             HttpResult httpResult = NewRequestUtils.doPostWithForm(url, param);
             //添加http日志记录
-            httpLogCUDMapper.addHttpLogOut(httpResult.getHttpLogOutPO());
+            httpLogRecordService.addHttpLogOut(httpResult.getHttpLogOutPO());
             //判断状态码以及数据类型转换
             return verifyStatusCodeAndJsonFormat(httpResult, clazz);
     }
@@ -45,7 +48,7 @@ public class HttpLogServiceImpl implements HttpLogService {
             //网络请求
             HttpResult httpResult = NewRequestUtils.doPost(url, param);
             //添加http日志记录
-            httpLogCUDMapper.addHttpLogOut(httpResult.getHttpLogOutPO());
+            httpLogRecordService.addHttpLogOut(httpResult.getHttpLogOutPO());
             //判断状态码以及数据类型转换
             return verifyStatusCodeAndJsonFormat(httpResult, clazz);
     }
@@ -55,7 +58,7 @@ public class HttpLogServiceImpl implements HttpLogService {
             //网络请求
             HttpResult httpResult = NewRequestUtils.doPost(url, param, headerMaps);
             //添加http日志记录
-            httpLogCUDMapper.addHttpLogOut(httpResult.getHttpLogOutPO());
+            httpLogRecordService.addHttpLogOut(httpResult.getHttpLogOutPO());
             //判断状态码以及数据类型转换
             return verifyStatusCodeAndJsonFormat(httpResult, clazz);
     }
@@ -65,7 +68,7 @@ public class HttpLogServiceImpl implements HttpLogService {
             //网络请求
             HttpResult httpResult = NewRequestUtils.doPut(url, param);
             //添加http日志记录
-            httpLogCUDMapper.addHttpLogOut(httpResult.getHttpLogOutPO());
+            httpLogRecordService.addHttpLogOut(httpResult.getHttpLogOutPO());
             //判断状态码以及数据类型转换
             return verifyStatusCodeAndJsonFormat(httpResult, clazz);
     }
@@ -75,7 +78,7 @@ public class HttpLogServiceImpl implements HttpLogService {
             //网络请求
             HttpResult httpResult = NewRequestUtils.doPut(url, param, headerMap);
             //添加http日志记录
-            httpLogCUDMapper.addHttpLogOut(httpResult.getHttpLogOutPO());
+            httpLogRecordService.addHttpLogOut(httpResult.getHttpLogOutPO());
             //判断状态码以及数据类型转换
             return verifyStatusCodeAndJsonFormat(httpResult, clazz);
     }
@@ -87,6 +90,7 @@ public class HttpLogServiceImpl implements HttpLogService {
             //throw exceptionManager.createByCode("HTTP_0002");//http请求异常
         }
         try {
+            System.out.println(httpResult.getContent());
             return JSONObject.parseObject(httpResult.getContent(), clazz);
         }catch (JSONException e) {
             //根据项目架构进行异常抛出
