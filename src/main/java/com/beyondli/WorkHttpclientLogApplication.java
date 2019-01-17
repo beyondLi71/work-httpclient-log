@@ -6,8 +6,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableAsync;
 
 @SpringBootApplication
-//开启异步调用
-@EnableAsync
 @MapperScan("com.beyondli.repository")
 public class WorkHttpclientLogApplication {
 

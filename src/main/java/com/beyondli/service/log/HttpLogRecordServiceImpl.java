@@ -3,6 +3,7 @@ package com.beyondli.service.log;
 import com.beyondli.entity.po.httplog.HttpLogOutPO;
 import com.beyondli.repository.httplog.HttpLogCUDMapper;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -13,6 +14,7 @@ import javax.annotation.Resource;
  * Desc .
  */
 @Service
+@EnableAsync
 public class HttpLogRecordServiceImpl implements HttpLogRecordService{
     @Resource
     HttpLogCUDMapper httpLogCUDMapper;
