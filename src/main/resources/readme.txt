@@ -9,8 +9,9 @@
         1.com->beyondli->common->utils->NewRequestUtils     (此文件为所有http请求方式的静态工具类)
         2.com->beyondli->common->entity->enums              (1中使用)
         3.com->beyondli->common->entity->po                 (此文件夹下所有文件,1中使用,其中HttpResult为统一返回体)
-        4.com->beyondli->service->http                      (此文件夹下所有文件,实现监控记录的service层)
-        5.com->beyondli->repository->httplog                (此文件夹下所有文件,实现监控记录的dao层)
+        4.com->beyondli->service->log                       (此文件夹下所有文件,实现监控记录的service层,为添加异步使用防止收业务层事物影响)
+        5.com->beyondli->service->http                      (此文件夹下所有文件,实现监控记录的service层)
+        6.com->beyondli->repository->httplog                (此文件夹下所有文件,实现监控记录的dao层)
         注:需要一张基础表,建表语句在schema-httpclient-log.sql文件中
            如需要实现全部功能,需拷贝以上文件,如仅需使用http调用,仅拷贝1,2,3即可。
 
