@@ -83,6 +83,12 @@ public class HttpLogServiceImpl implements HttpLogService {
             return verifyStatusCodeAndJsonFormat(httpResult, clazz);
     }
 
+    @Override
+    public <T> T executeGetWithBasic(String url, String userName, String password, Class<T> clazz) {
+        HttpResult httpResult = NewRequestUtils.doGetWithBasic(url, userName, password); //网络请求
+        return this.addHttpLogOut(httpResult, clazz);
+    }
+
     public <T> T verifyStatusCodeAndJsonFormat(HttpResult httpResult, Class<T> clazz) {
         if (httpResult.getStatusCode().contains("404") || httpResult.getStatusCode().contains("504") || httpResult.getStatusCode().contains("EXC")) {
             //根据业务需求进行异常处理
@@ -96,6 +102,34 @@ public class HttpLogServiceImpl implements HttpLogService {
             //根据项目架构进行异常抛出
             throw new RuntimeException("json-error");
             //throw exceptionManager.createByCode("HTTP_0002");//Json转换异常
+        }
+    }
+
+    /**
+     * @Author: beyondLi
+     * @Description:  处理http请求返回的数据
+     * @Date: 14:16 2018/9/26
+     */
+    private <T> T addHttpLogOut(HttpResult httpResult, Class<T> clazz) {
+        try {
+            httpLogRecordService.addHttpLogOut(httpResult.getHttpLogOutPO()); //添加http日志记录
+            this.checkoutResponseCode(httpResult.getStatusCode());
+            return JSONObject.parseObject(httpResult.getContent(), clazz);
+        } catch (JSONException e) {
+            //根据业务需求进行异常处理
+            throw new RuntimeException("http-error");
+        }
+    }
+
+    /**
+     * @Author: beyondLi
+     * @Description:   判断返回的状态码
+     * @Date: 10:30 2018/9/26
+     */
+    private void checkoutResponseCode(String statusCode) {
+        if (statusCode.contains("404") || statusCode.contains("504") || statusCode.contains("EXC")) {
+            //根据业务需求进行异常处理
+            throw new RuntimeException("http-error");
         }
     }
 }
