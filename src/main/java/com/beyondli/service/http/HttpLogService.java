@@ -22,6 +22,6 @@ public interface HttpLogService {
 
     <T> T executePut(String url, String param, Map<String, String> headerMap, Class<T> clazz);
 
-
+    <T> T executeGetWithBasic(String url, String userName, String password, Class<T> clazz);
 
 }

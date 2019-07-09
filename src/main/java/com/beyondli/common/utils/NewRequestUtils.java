@@ -4,12 +4,16 @@ import com.beyondli.entity.enums.ValidEnum;
 import com.beyondli.entity.po.httplog.HttpLogOutPO;
 import com.beyondli.entity.po.http.HttpResult;
 import org.apache.http.*;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.*;
 import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
@@ -354,6 +358,55 @@ public class NewRequestUtils {
     public static void sethttpResultInfo(HttpResult httpResult,String statusCode, String content, HttpLogOutPO httpLogOutPO) {
         httpResult.setStatusCode(statusCode);
         httpResult.setContent(content);
+        httpResult.setHttpLogOutPO(httpLogOutPO);
+    }
+
+    public static HttpResult doGetWithBasic(String url, String userName, String password) {
+        HttpGet get = new HttpGet(url);
+        return getBasic(get, userName, password);
+    }
+
+    public static CloseableHttpClient getHttpClient(String name, String password){
+        CredentialsProvider provider = new BasicCredentialsProvider();
+        UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(name, password);
+        provider.setCredentials(AuthScope.ANY, credentials);
+        return  HttpClients.custom().setDefaultCredentialsProvider(provider).build();
+    }
+
+    private static HttpResult getBasic(HttpGet get, String userName, String password) {
+        CloseableHttpClient httpClient = getHttpClient(userName, password);
+        HttpLogOutPO httpLogOutPO = null; //初始化请求数据，并且封装对象
+        HttpResult httpResult = new HttpResult();
+        String url = "";
+        try {
+            url = get.getRequestLine().getUri();
+            httpLogOutPO = getReqHttpLogOut(get);
+            CloseableHttpResponse response = httpClient.execute(get);
+            HttpEntity entity = response.getEntity();
+            String code = String.valueOf(response.getStatusLine().getStatusCode());
+            httpResult.setStatusCode(code);
+            httpResult.setContent(EntityUtils.toString(entity, "UTF-8"));
+            //封装HttpResult实体类
+            setRespHttpLogOut(httpResult, httpLogOutPO);
+            httpResult.setHttpLogOutPO(httpLogOutPO);
+            if (httpClient != null) {
+                httpClient.close();
+            }
+        }  catch (InterruptedIOException e) {
+            setExceptionHttpResult(httpResult, "EXC-504", url, e.getMessage(), "GET");
+        }  catch (HttpHostConnectException e) {
+            setExceptionHttpResult(httpResult, "EXC-404", url, e.getMessage(), "GET");
+        } catch (IOException e) {
+            setExceptionHttpResult(httpResult, "EXC-ERROR", url, e.getMessage(), "GET");
+        }
+        return httpResult;
+    }
+
+    private static void setExceptionHttpResult(HttpResult httpResult, String code, String url, String message, String method) {
+        LocalDateTime now = LocalDateTime.now();
+        httpResult.setStatusCode(code);
+        httpResult.setContent(message);
+        HttpLogOutPO httpLogOutPO = new HttpLogOutPO(url, method, "", "", code, message, System.currentTimeMillis(), now, now, ValidEnum.VALID.name());
         httpResult.setHttpLogOutPO(httpLogOutPO);
     }
 }
