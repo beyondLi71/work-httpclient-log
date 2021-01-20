@@ -46,7 +46,7 @@ public class HttpLogServiceImpl implements HttpLogService {
     @Override
     public <T> T executePost(String url, String param, Class<T> clazz) {
             //网络请求
-            HttpResult httpResult = NewRequestUtils.doPost(url, param);
+            HttpResult httpResult = NewRequestUtils.doPostWithJson(url, param);
             //添加http日志记录
             httpLogRecordService.addHttpLogOut(httpResult.getHttpLogOutPO());
             //判断状态码以及数据类型转换
@@ -56,7 +56,7 @@ public class HttpLogServiceImpl implements HttpLogService {
     @Override
     public <T> T executePost(String url, String param, Map<String, String> headerMaps, Class<T> clazz) {
             //网络请求
-            HttpResult httpResult = NewRequestUtils.doPost(url, param, headerMaps);
+            HttpResult httpResult = NewRequestUtils.doPostWithJson(url, param, headerMaps);
             //添加http日志记录
             httpLogRecordService.addHttpLogOut(httpResult.getHttpLogOutPO());
             //判断状态码以及数据类型转换
@@ -66,7 +66,7 @@ public class HttpLogServiceImpl implements HttpLogService {
     @Override
     public <T> T executePut(String url, String param, Class<T> clazz) {
             //网络请求
-            HttpResult httpResult = NewRequestUtils.doPut(url, param);
+            HttpResult httpResult = NewRequestUtils.doPutWithJson(url, param);
             //添加http日志记录
             httpLogRecordService.addHttpLogOut(httpResult.getHttpLogOutPO());
             //判断状态码以及数据类型转换
@@ -76,7 +76,7 @@ public class HttpLogServiceImpl implements HttpLogService {
     @Override
     public <T> T executePut(String url, String param, Map<String, String> headerMap, Class<T> clazz) {
             //网络请求
-            HttpResult httpResult = NewRequestUtils.doPut(url, param, headerMap);
+            HttpResult httpResult = NewRequestUtils.doPutWithJson(url, param, headerMap);
             //添加http日志记录
             httpLogRecordService.addHttpLogOut(httpResult.getHttpLogOutPO());
             //判断状态码以及数据类型转换
