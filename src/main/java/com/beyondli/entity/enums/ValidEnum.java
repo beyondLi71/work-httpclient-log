@@ -1,7 +1,7 @@
 package com.beyondli.entity.enums;
 
 /**
- * @author JiShaochen
+ * @author beyondLi
  * @date 2018/7/4 16:35
  * @desc 用户是否有效的状态.
  */
